@@ -1,0 +1,100 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# stepdwt
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/stepdwt)](https://CRAN.R-project.org/package=stepdwt)
+<!-- badges: end -->
+
+The goal of stepdwt is to add a recipes:: preprocessing step that converts a dataframe of numeric columns, where each row is a time-series, into their discrete wavelet transformation coefficents. Is this a good idea? Maybe not! This is purely experimental for me at this point.
+
+## Installation
+
+stepdwt isn't on CRAN, although I guess one day it could be.
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+# install.packages("wavelets")
+devtools::install_github("mattsq/stepdwt")
+```
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(tidymodels)
+library(wavelets)
+library(stepdwt)
+
+create_data <- function(n, ts_length, arima_terms = list(ar = .2)) {
+
+  # create an arbitrary set of ar = .2 time series, for testing.
+
+  l <- map(1:n, ~ {
+    set.seed(.x)
+    return(tibble(id = .x, idx = 1:ts_length, ts = arima.sim(model = arima_terms, n = ts_length)))
+  })
+
+  # bind them together and pivot them so each row is a series, each column is a position
+  l_df <- bind_rows(l)
+  df <- pivot_wider(l_df, id_cols = c(id), names_from = c(idx), values_from = c(ts), names_prefix = "ts_")
+  return(df)
+
+}
+
+df <- create_data(n = 100, ts_length = 100)
+head(df)
+```
+
+Then we preprocess it using a recipe, and get back DWT coefficients! 
+
+```{r cars}
+recipe_check <- recipe(id ~ ., data = df) %>%
+   step_dwt(ends_with("1"), ends_with("2"))
+
+training_data <- recipe_check %>%
+  prep() %>%
+  juice()
+
+head(training_data)
+
+```
+
+You can then use this to fit a model. Here we do a very silly example, just for the purposes of illustration:
+
+```{r pressure, echo = FALSE}
+bs_df <- bootstraps(df, times = 5)
+
+model_test <- rand_forest(mode = "regression") %>%
+  set_engine("ranger")
+
+wf <- 
+  workflow() %>%
+  add_model(model_test) %>%
+  add_recipe(recipe_check)
+
+results <- 
+  fit_resamples(object = wf, 
+                resamples = bs_df, 
+                control = control_resamples(verbose = TRUE))
+
+collect_metrics(results)
+```
+
+
