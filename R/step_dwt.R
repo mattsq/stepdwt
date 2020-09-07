@@ -136,15 +136,6 @@ bake.step_dwt <- function(object, new_data, ...) {
   tibble::as_tibble(new_data)
 }
 
-#' @export
-tunable.step_dwt <- function(x, ...) {
-  tibble::tibble(
-    name = c("filter"),
-    call_info = list(list(pkg = "stepdwt", fun = "dwt_filter")),
-    source = "recipe",
-    component = "step_dwt",
-    component_id = x$id
-  )
-}
+
 
 

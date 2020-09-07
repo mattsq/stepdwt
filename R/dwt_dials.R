@@ -16,7 +16,7 @@ dwt_filter <- function(values = values_dwt_filter) {
     type     = c("character"),
     values   = values,
     default  = "haar",
-    label    = c(dwt_filter = "DWT Filter"),
+    label    = c(filter = "DWT Filter"),
     finalize = NULL
   )
 }
@@ -30,3 +30,14 @@ values_dwt_filter <- c(
   paste0("bl", c(14,18,20)),
   paste0("c", seq(6,30, by = 6))
 )
+
+#' @export
+tunable.step_dwt <- function(x, ...) {
+  tibble::tibble(
+    name = c("filter"),
+    call_info = list(list(pkg = "stepdwt", fun = "dwt_filter")),
+    source = "recipe",
+    component = "step_dwt",
+    component_id = x$id
+  )
+}
