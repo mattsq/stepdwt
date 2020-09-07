@@ -136,6 +136,13 @@ bake.step_dwt <- function(object, new_data, ...) {
   tibble::as_tibble(new_data)
 }
 
+#' @export
+print.step_dwt <- function (x, width = max(20, options()$width - 31), ...)
+{
+  cat("Discrete Wavelet Transformation for ", sep = "")
+  printer(names(x$models), x$terms, x$trained, width = width)
+  invisible(x)
+}
 
 
 
