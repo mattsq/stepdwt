@@ -53,7 +53,8 @@ step_dwt <- function(
   role = NA,
   trained = FALSE,
   ref_dist = NULL,
-  options = list(filter = "haar"),
+  filter = "haar",
+  options = list(),
   skip = FALSE,
   id = recipes::rand_id("dwt")
 ) {
@@ -70,6 +71,7 @@ step_dwt <- function(
       trained = trained,
       role = role,
       ref_dist = ref_dist,
+      filter = filter,
       options = options,
       skip = skip,
       id = id
@@ -78,13 +80,14 @@ step_dwt <- function(
 }
 
 step_dwt_new <-
-  function(terms, role, trained, ref_dist, options, skip, id) {
+  function(terms, role, trained, ref_dist, filter, options, skip, id) {
     recipes::step(
       subclass = "dwt",
       terms = terms,
       role = role,
       trained = trained,
       ref_dist = ref_dist,
+      filter = filter,
       options = options,
       skip = skip,
       id = id
@@ -107,6 +110,7 @@ prep.step_dwt <- function(x, training, info = NULL, ...) {
     trained = TRUE,
     role = x$role,
     ref_dist = ref_dist,
+    filter = x$filter,
     options = x$options,
     skip = x$skip,
     id = x$id
@@ -118,7 +122,7 @@ bake.step_dwt <- function(object, new_data, ...) {
   ## this probably is a little aroundabout?
   vars <- names(object$ref_dist)
   dwt_call <- dplyr::expr(map_dwt_over_df(filter = NULL))
-  dwt_call <- recipes:::mod_call_args(dwt_call, args = object$options)
+  dwt_call$filter <- dplyr::expr(object$filter)
   dwt_call$df <- dplyr::expr(new_data[,vars])
 
   new_data_cols <- eval(dwt_call)

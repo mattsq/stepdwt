@@ -10,7 +10,8 @@ step_dwt(
   role = NA,
   trained = FALSE,
   ref_dist = NULL,
-  options = list(filter = "haar"),
+  filter = "haar",
+  options = list(),
   skip = FALSE,
   id = recipes::rand_id("dwt")
 )
