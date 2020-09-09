@@ -3,7 +3,6 @@
 S3method(bake,step_dwt)
 S3method(prep,step_dwt)
 S3method(print,step_dwt)
-S3method(tunable,step_dwt)
 export("%>%")
 export(dwt_filter)
 export(step_dwt)
