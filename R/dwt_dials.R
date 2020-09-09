@@ -16,7 +16,7 @@ dwt_filter <- function(values = values_dwt_filter) {
     type     = c("character"),
     values   = values,
     default  = "haar",
-    label    = c(filter = "DWT Filter"),
+    label    = c(dwt_filter = "DWT Filter"),
     finalize = NULL
   )
 }

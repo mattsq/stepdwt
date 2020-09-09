@@ -12,6 +12,7 @@ step_dwt(
   ref_dist = NULL,
   filter = "haar",
   options = list(),
+  prefix = "DWT_",
   skip = FALSE,
   id = recipes::rand_id("dwt")
 )
@@ -32,6 +33,9 @@ variables will be used as predictors in a model.}
 \item{options}{A list of options to the default method for
 \code{\link[wavelets:dwt]{wavelets::dwt()}}. Argument defaults are set to
 \code{filter = 'haar'}. No others should be passed.}
+
+\item{prefix}{A character string that will be the prefix to the
+resulting new variables.}
 }
 \value{
 An updated version of \code{recipe} with the new step
