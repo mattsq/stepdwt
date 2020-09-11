@@ -56,6 +56,7 @@ step_dwt <- function(
   trained = FALSE,
   ref_dist = NULL,
   filter = "haar",
+  coefs = "all",
   options = list(),
   prefix = "DWT_",
   skip = FALSE,
@@ -75,6 +76,7 @@ step_dwt <- function(
       role = role,
       ref_dist = ref_dist,
       filter = filter,
+      coefs = coefs,
       options = options,
       prefix = prefix,
       skip = skip,
@@ -84,7 +86,7 @@ step_dwt <- function(
 }
 
 step_dwt_new <-
-  function(terms, role, trained, ref_dist, filter, options, prefix, skip, id) {
+  function(terms, role, trained, ref_dist, filter, coefs, options, prefix, skip, id) {
     recipes::step(
       subclass = "dwt",
       terms = terms,
@@ -92,6 +94,7 @@ step_dwt_new <-
       trained = trained,
       ref_dist = ref_dist,
       filter = filter,
+      coefs = coefs,
       options = options,
       prefix = prefix,
       skip = skip,
@@ -116,6 +119,7 @@ prep.step_dwt <- function(x, training, info = NULL, ...) {
     role = x$role,
     ref_dist = ref_dist,
     filter = x$filter,
+    coefs = x$coefs,
     options = x$options,
     prefix = x$prefix,
     skip = x$skip,
