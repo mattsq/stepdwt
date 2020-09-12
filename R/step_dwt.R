@@ -148,7 +148,7 @@ bake.step_dwt <- function(object, new_data, ...) {
                align = object$align
                )
 
-  dwt_call <- rlang::call2(map_dwt_over_df, !!!args, .ns = "stepdwt")
+  dwt_call <- rlang::call2("map_dwt_over_df", !!!args, .ns = "stepdwt")
   new_data_cols <- eval(dwt_call)
 
   comps <- recipes::check_name(new_data_cols, new_data, object)
