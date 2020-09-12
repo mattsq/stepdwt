@@ -30,5 +30,5 @@ test_check("stepdwt")
 #   pull_wavelet_coefs(level = 3, type = "V")
 #
 # df %>% map_dwt_over_df(filter = "d4", align = TRUE, level = 3)
-
-
+#
+#

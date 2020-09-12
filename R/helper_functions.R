@@ -46,7 +46,6 @@ extract_dwt_vector <- function(x, filter, coefs = "all",  level = 3, align) {
   return(dwt_vars)
 }
 # the second tries to efficiently repeat the process over a dataframe
-#' @export
 map_dwt_over_df <- function(df, filter, coefs  = "all", level = 3, align = FALSE) {
   if(filter == "haar" & align) rlang::warn("Haar filter doesn't require alignment.")
   purrr::map_dfr(1:nrow(df), ~ extract_dwt_vector(df[.x,] %>% as.numeric(), filter = filter, coefs = coefs, level = level, align = align) %>% {.[names(.) != ""]})

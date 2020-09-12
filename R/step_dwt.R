@@ -141,14 +141,14 @@ bake.step_dwt <- function(object, new_data, ...) {
   ## I use expr(), mod_call_args and eval to evaluate map_dwt
   ## this probably is a little aroundabout?
   vars <- names(object$ref_dist)
-  args <- list(df = object$df,
+  args <- list(df = new_data,
                filter = object$filter,
                coefs = object$coefs,
                level = object$level,
                align = object$align
                )
 
-  dwt_call <- rlang::call2("map_dwt_over_df", !!!args, .ns = "stepdwt")
+  dwt_call <- rlang::call2(map_dwt_over_df, !!!args)
   new_data_cols <- eval(dwt_call)
 
   comps <- recipes::check_name(new_data_cols, new_data, object)
