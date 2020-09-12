@@ -33,6 +33,7 @@
 #' @importFrom tibble as_tibble tibble
 #' @importFrom purrr map_dfr
 #' @importFrom wavelets dwt
+#' @importFrom rlang call2
 #' @export
 #' @details
 #' Some boilerplate about what DWT actually is to go here!
@@ -40,6 +41,7 @@
 #' @references Add reference
 #'
 #' @examples
+#' \dontrun{
 #' rec <- recipe( ~ ., data = USArrests)
 #' dwt_trans <- rec %>%
 #'   step_center(all_numeric()) %>%
@@ -47,7 +49,7 @@
 #'   step_dwt(all_numeric())
 #' dwt_estimates <- prep(dwt_trans, training = USArrests)
 #' dwt_data <- bake(dwt_estimates, USArrests)
-#'
+#'}
 
 step_dwt <- function(
   recipe,
@@ -57,6 +59,8 @@ step_dwt <- function(
   ref_dist = NULL,
   filter = "haar",
   coefs = "all",
+  coef_level = 3,
+  align = FALSE,
   options = list(),
   prefix = "DWT_",
   skip = FALSE,
@@ -77,6 +81,8 @@ step_dwt <- function(
       ref_dist = ref_dist,
       filter = filter,
       coefs = coefs,
+      coef_level = coef_level,
+      align = align,
       options = options,
       prefix = prefix,
       skip = skip,
@@ -86,7 +92,7 @@ step_dwt <- function(
 }
 
 step_dwt_new <-
-  function(terms, role, trained, ref_dist, filter, coefs, options, prefix, skip, id) {
+  function(terms, role, trained, ref_dist, filter, coefs, coef_level, align, options, prefix, skip, id) {
     recipes::step(
       subclass = "dwt",
       terms = terms,
@@ -95,6 +101,8 @@ step_dwt_new <-
       ref_dist = ref_dist,
       filter = filter,
       coefs = coefs,
+      coef_level = coef_level,
+      align = align,
       options = options,
       prefix = prefix,
       skip = skip,
@@ -120,6 +128,8 @@ prep.step_dwt <- function(x, training, info = NULL, ...) {
     ref_dist = ref_dist,
     filter = x$filter,
     coefs = x$coefs,
+    coef_level = x$coef_level,
+    align = x$align,
     options = x$options,
     prefix = x$prefix,
     skip = x$skip,
@@ -131,10 +141,14 @@ bake.step_dwt <- function(object, new_data, ...) {
   ## I use expr(), mod_call_args and eval to evaluate map_dwt
   ## this probably is a little aroundabout?
   vars <- names(object$ref_dist)
-  dwt_call <- dplyr::expr(map_dwt_over_df(filter = NULL, coefs = NULL))
-  dwt_call$filter <- dplyr::expr(object$filter)
-  dwt_call$coefs <- dplyr::expr(object$coefs)
-  dwt_call$df <- dplyr::expr(new_data[,vars])
+  args <- list(df = object$df,
+               filter = object$filter,
+               coefs = object$coefs,
+               level = object$level,
+               align = object$align
+               )
+
+  dwt_call <- rlang::call2(map_dwt_over_df, !!!args)
   new_data_cols <- eval(dwt_call)
 
   comps <- recipes::check_name(new_data_cols, new_data, object)
@@ -152,7 +166,7 @@ bake.step_dwt <- function(object, new_data, ...) {
 print.step_dwt <- function (x, width = max(20, options()$width - 31), ...)
 {
   cat("Discrete Wavelet Transformation for ", sep = "")
-  printer(names(x$models), x$terms, x$trained, x$filter, x$coefs, width = width)
+  printer(names(x$models), x$terms, x$trained, width = width)
   invisible(x)
 }
 

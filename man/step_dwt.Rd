@@ -12,6 +12,8 @@ step_dwt(
   ref_dist = NULL,
   filter = "haar",
   coefs = "all",
+  coef_level = 3,
+  align = FALSE,
   options = list(),
   prefix = "DWT_",
   skip = FALSE,
@@ -54,6 +56,7 @@ of wavelets as computed by \code{wavelets::dwt()}
 Some boilerplate about what DWT actually is to go here!
 }
 \examples{
+\dontrun{
 rec <- recipe( ~ ., data = USArrests)
 dwt_trans <- rec \%>\%
   step_center(all_numeric()) \%>\%
@@ -61,7 +64,7 @@ dwt_trans <- rec \%>\%
   step_dwt(all_numeric())
 dwt_estimates <- prep(dwt_trans, training = USArrests)
 dwt_data <- bake(dwt_estimates, USArrests)
-
+}
 }
 \references{
 Add reference

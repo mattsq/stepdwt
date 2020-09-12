@@ -22,4 +22,5 @@ Imports:
     tibble,
     purrr,
     magrittr,
-    dials
+    dials,
+    rlang
