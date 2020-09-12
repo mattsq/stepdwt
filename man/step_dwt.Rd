@@ -11,6 +11,7 @@ step_dwt(
   trained = FALSE,
   ref_dist = NULL,
   filter = "haar",
+  coefs = "all",
   options = list(),
   prefix = "DWT_",
   skip = FALSE,

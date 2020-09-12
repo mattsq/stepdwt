@@ -131,10 +131,12 @@ bake.step_dwt <- function(object, new_data, ...) {
   ## I use expr(), mod_call_args and eval to evaluate map_dwt
   ## this probably is a little aroundabout?
   vars <- names(object$ref_dist)
-  dwt_call <- dplyr::expr(map_dwt_over_df(filter = NULL))
+  dwt_call <- dplyr::expr(map_dwt_over_df(filter = NULL, coefs = NULL))
   dwt_call$filter <- dplyr::expr(object$filter)
+  dwt_call$coefs <- dplyr::expr(object$coefs)
   dwt_call$df <- dplyr::expr(new_data[,vars])
   new_data_cols <- eval(dwt_call)
+
   comps <- recipes::check_name(new_data_cols, new_data, object)
   new_data <- dplyr::bind_cols(new_data, tibble::as_tibble(new_data_cols))
   ## get rid of the original columns
@@ -150,7 +152,7 @@ bake.step_dwt <- function(object, new_data, ...) {
 print.step_dwt <- function (x, width = max(20, options()$width - 31), ...)
 {
   cat("Discrete Wavelet Transformation for ", sep = "")
-  printer(names(x$models), x$terms, x$trained, width = width)
+  printer(names(x$models), x$terms, x$trained, x$filter, x$coefs, width = width)
   invisible(x)
 }
 
