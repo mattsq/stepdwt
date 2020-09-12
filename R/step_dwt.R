@@ -144,7 +144,7 @@ bake.step_dwt <- function(object, new_data, ...) {
   args <- list(df = new_data,
                filter = object$filter,
                coefs = object$coefs,
-               level = object$level,
+               level = object$coef_level,
                align = object$align
                )
 
