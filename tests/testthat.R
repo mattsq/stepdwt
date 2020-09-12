@@ -21,7 +21,7 @@ test_check("stepdwt")
 # df <- map_dfr(1:n, ~ generate_ts(.x, ts_length))
 #
 # test_recipe <- recipes::recipe(id ~ ., data = df) %>%
-#   stepdwt::step_dwt(all_predictors(), coefs = "scaling") %>%
+#   stepdwt::step_dwt(all_predictors(), coefs = "all", coef_level = 2) %>%
 #   prep()
 #
 # test_recipe %>% bake(., new_data = df)

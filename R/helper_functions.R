@@ -3,7 +3,7 @@ pull_wavelet_coefs <- function(dwt_object, type = "W", level = 3) {
 
   each_level <- function(dwt_object, level, type) {
     args <- list(dwt_object, type)
-    slot_call <- rlang::call2(.fn = `@`, !!!args)
+    slot_call <- rlang::call2(.fn = `@`, !!!args, .ns = "stepdwt")
     slot_obj <- eval(slot_call)
     x <- slot_obj[[level]] %>% as.numeric()
     names(x) <- paste0(type, level, "_", 1:length(x))
