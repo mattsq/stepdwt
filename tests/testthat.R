@@ -21,14 +21,33 @@ test_check("stepdwt")
 # df <- map_dfr(1:n, ~ generate_ts(.x, ts_length))
 #
 # test_recipe <- recipes::recipe(id ~ ., data = df) %>%
-#   stepdwt::step_dwt(all_predictors(), coefs = "all", coef_level = 2) %>%
+#   stepdwt::step_dwt(all_predictors(), coefs = "all", coef_level = 1, filter = "la8", align = TRUE) %>%
 #   prep()
 #
 # test_recipe %>% bake(., new_data = df)
 #
-# wavelets::dwt(df[10,2:ncol(df)] %>% unlist()) %>%
-#   pull_wavelet_coefs(level = 3, type = "V")
+# df_check <- bind_rows(df, map_dfr(1:n, ~ generate_ts(.x, ts_length, ar = .9)), .id = "df") %>%
+#   mutate(df = factor(df))
 #
-# df %>% map_dwt_over_df(filter = "d4", align = TRUE, level = 3)
-
+# df_check <- select(df_check, -id)
+#
+# test_recipe_2_df <- recipe(df ~ ., data = df_check) %>%
+#   step_dwt(all_predictors(), coef_level = 1) %>%
+#   prep() %>% bake(new_data = df_check)
+#
+# model_test <- rand_forest(mode = "classification") %>%
+#   set_engine("ranger")
+#
+# fit(model_test, df ~ ., data = test_recipe_2_df)
+#
+# ## Something still isn't quite right here - for some reason, used in a workflow like this
+# ## all the predictors disappear?
+#
+# wf <- workflow() %>%
+#   add_recipe(test_recipe_2) %>%
+#   add_model(model_test)
+#
+# bs <- bootstraps(df_check)
+#
+# fit_resamples(wf, resamples = bs, control = control_resamples(verbose = TRUE))
 
